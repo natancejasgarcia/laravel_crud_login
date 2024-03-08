@@ -6,12 +6,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
-Auth::routes();
 
-Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Registra las rutas de autenticación con la opción de verificación de correo electrónico
+Auth::routes(['verify' => true]);
 
-Auth::routes();
-
-Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
-
-Route::resource('/products', ProductController::class);
+// Rutas accesibles solo por usuarios verificados
+Route::middleware(['verified'])->group(function () {
+    Route::get('/home', [\App\Http\Controllers\HomeController::class, 'index'])->name('home');
+    Route::resource('/products', ProductController::class);
+});
